@@ -11,7 +11,7 @@ export const getReqType = (req: IncomingMessage) => {
     }
   }
 
-  if (req.url?.startsWith(USERS_ENDPOINT)) {
+  if (req.url.startsWith(USERS_ENDPOINT)) {
     switch (req.method) {
       case HttpMethod.GET:
         return 'getUserById';

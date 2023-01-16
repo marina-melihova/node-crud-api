@@ -18,18 +18,18 @@ export const handleRequest = async (req: IncomingMessage, res: ServerResponse) =
       case 'getUserById':
         return userController.getUserById(req, res);
       case 'postUser':
-        return userController.createUser(req, res);
+        return await userController.createUser(req, res);
       case 'putUser':
-        return userController.updateUser(req, res);
+        return await userController.updateUser(req, res);
       case 'deleteUser':
         return userController.deleteUser(req, res);
       default:
         statusCode = HttpStatusCode.NOT_FOUND;
         result = { message: 'Route not found' };
     }
-  } catch (err) {
-    statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR;
-    result = { message: 'An error has occurred during connection to the server' };
+  } catch (err: any) {
+    statusCode = err.status || HttpStatusCode.INTERNAL_SERVER_ERROR;
+    result = { message: err.message };
   }
   res.writeHead(statusCode);
   return res.end(JSON.stringify(result));

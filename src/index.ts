@@ -3,9 +3,9 @@ import http from 'http';
 import cluster from 'cluster';
 import os from 'os';
 import { pipeline } from 'stream/promises';
-import { server } from './server';
 import { User, usersCollection, updateUsers } from './api/userModel';
 import { handleRequest } from './api/userRouter';
+import { server } from './server';
 import { HttpStatusCode } from './constants';
 
 const PORT = +process.env.PORT || 4000;
@@ -13,15 +13,14 @@ const environment = process.env.NODE_ENV;
 
 if (environment === 'multi') {
   if (cluster.isPrimary) {
-    let robinIdx = 0;
+    let portIdx = 0;
     const numCPUs = os.cpus().length;
     for (let i = 0; i < numCPUs; i++) {
       cluster.fork({ WORKER_PORT: PORT + i + 1 });
     }
 
     const primaryServer = http.createServer(async (req, res) => {
-      cluster.workers[robinIdx + 1].send({ users: usersCollection });
-      const url = `http://localhost:${PORT + robinIdx + 1}${req.url}`;
+      const url = `http://localhost:${PORT + portIdx + 1}${req.url}`;
       const reqOptions: http.RequestOptions = {
         method: req.method,
         headers: req.headers,
@@ -38,24 +37,18 @@ if (environment === 'multi') {
       });
 
       await pipeline(req, workerReq);
-      robinIdx = (robinIdx + 1) % numCPUs;
+      portIdx = (portIdx + 1) % numCPUs;
     });
 
     primaryServer.listen(PORT, () => {
       console.log(`Primary ${process.pid} started on ${PORT}`);
     });
-
-    cluster.on('exit', (worker, code, signal) => {
-      console.log(`worker ${worker.process.pid} died`);
-      console.log("Let's fork another worker!");
-      cluster.fork({ WORKER_PORT: PORT + worker.id });
-    });
   } else {
     const workerPort = +process.env.WORKER_PORT;
     const serverWorker = http.createServer(async (req, res) => {
       await handleRequest(req, res);
-      cluster.worker?.send({ users: usersCollection });
-      console.log(`Worker pid=${String(cluster.worker?.id)} (pid=${process.pid}) returned response on request`);
+      cluster.worker.send({ users: usersCollection });
+      console.log(`Worker pid=${String(cluster.worker.id)} (pid=${process.pid}) returned response on request`);
     });
 
     serverWorker.listen(workerPort, () => {
@@ -65,6 +58,10 @@ if (environment === 'multi') {
 
   cluster.on('message', (worker, message: { users: User[] }) => {
     updateUsers(message.users);
+    const workers = Object.values(cluster.workers);
+    workers.forEach(worker => {
+      worker.send(message);
+    });
   });
 
   cluster.on('listening', (worker, address) => {
@@ -79,12 +76,3 @@ if (environment === 'multi') {
     console.log(`Server running at http://localhost:${PORT}/`);
   });
 }
-
-process.on('unhandledRejection', err => {
-  throw err;
-});
-
-process.on('uncaughtException', err => {
-  console.log(err.toString());
-  process.exit(1);
-});

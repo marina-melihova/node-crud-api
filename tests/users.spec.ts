@@ -4,10 +4,6 @@ import { validate as uuidValidate } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
 import { afterEach, expect, jest } from '@jest/globals';
 import { updateUsers } from '../src/api/userModel';
-import 'dotenv/config';
-const environment = process.env.NODE_ENV;
-
-console.log(environment);
 
 const newUser = {
   username: 'Maryna',

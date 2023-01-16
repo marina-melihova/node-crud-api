@@ -19,7 +19,7 @@ export class UserController {
   };
 
   getUserById = (req: IncomingMessage, res: ServerResponse) => {
-    const id = String(req.url?.split('/')[3]);
+    const id = req.url.split('/')[3];
     const isValidUUID = uuidValidate(id);
     if (!isValidUUID) {
       res.writeHead(HttpStatusCode.BAD_REQUEST);
@@ -56,7 +56,7 @@ export class UserController {
   };
 
   updateUser = async (req: IncomingMessage, res: ServerResponse) => {
-    const id = String(req.url?.split('/')[3]);
+    const id = req.url.split('/')[3];
     const isValidUUID = uuidValidate(id);
 
     if (!isValidUUID) {
@@ -79,7 +79,7 @@ export class UserController {
   };
 
   deleteUser = (req: IncomingMessage, res: ServerResponse) => {
-    const id = String(req.url?.split('/')[3]);
+    const id = req.url.split('/')[3];
     const isValidUUID = uuidValidate(id);
 
     if (!isValidUUID) {
