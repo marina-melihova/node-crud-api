@@ -1,6 +1,6 @@
+import { IncomingMessage, ServerResponse } from 'http';
 import { usersCollection } from './userModel';
 import { UserService } from './userService';
-import { IncomingMessage, ServerResponse } from 'http';
 import { UserController } from './userController';
 import { getReqType } from '../services';
 import { HttpStatusCode } from '../constants';
