@@ -1,11 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { usersCollection } from './userModel';
 import { UserService } from './userService';
 import { UserController } from './userController';
 import { getReqType } from '../services';
 import { HttpStatusCode } from '../constants';
 
-const userService = new UserService(usersCollection);
+const userService = new UserService();
 const userController = new UserController(userService);
 export const handleRequest = async (req: IncomingMessage, res: ServerResponse) => {
   res.setHeader('Content-Type', 'application/json');
@@ -30,7 +29,7 @@ export const handleRequest = async (req: IncomingMessage, res: ServerResponse) =
     }
   } catch (err) {
     statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR;
-    result = { message: "An error occured on the web server you're trying to access" };
+    result = { message: 'An error has occurred during connection to the server' };
   }
   res.writeHead(statusCode);
   return res.end(JSON.stringify(result));
