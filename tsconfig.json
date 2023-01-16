@@ -1,28 +1,16 @@
 {
   "compilerOptions": {
     "target": "es2022",
-    "strict": true,
-    "skipLibCheck": true,
+    "module": "commonjs",
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "rootDir": ".",
-    "outDir": "./dist/",
-    "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "module": "ES2022",
-    "allowJs": true,
-    "resolveJsonModule": true
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true
   },
-  "ts-node": {
-    "esm": true,
-    "transpileOnly": true,
-    "files": true,
-    "preferTsExts": true,
-    "allowSyntheticDefaultImports": true,
-    "module": "CommonJS",
-    "compiler": "typescript",
-    "include": ["src"],
-    "exclude": ["node_modules", "tests", "dist"]
-  }
+  "exclude": ["node_modules", "tests", "dist", "**/*spec.ts"],
+  "include": ["src"]
 }

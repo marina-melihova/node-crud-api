@@ -1,5 +1,5 @@
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
-import { User, UserBody, updateUsers } from './userModel';
+import { v4 as uuidv4 } from 'uuid';
+import { User, UserBody } from './userModel';
 
 export class UserService {
   users: User[];
@@ -8,7 +8,7 @@ export class UserService {
     this.users = users;
   }
 
-  getUsers = async () => {
+  getUsers = () => {
     return this.users;
   };
 
@@ -22,14 +22,17 @@ export class UserService {
       ...userData,
     };
     this.users.push(createdUser);
+    return createdUser;
   };
 
   updateUser = (newUser: User) => {
     const userId = newUser.id;
-    updateUsers(this.users.map(user => (user.id === userId ? newUser : user)));
+    const userIdx = this.users.findIndex(user => user.id === userId);
+    this.users[userIdx] = newUser;
   };
 
   deleteUser = (userId: string) => {
-    updateUsers(this.users.filter(user => user.id !== userId));
+    const userIdx = this.users.findIndex(user => user.id === userId);
+    this.users.splice(userIdx, 1);
   };
 }

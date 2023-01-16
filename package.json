@@ -2,8 +2,7 @@
   "name": "node-crud-api",
   "version": "1.0.0",
   "description": "Node.js CRUD API",
-  "type": "module",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "start:dev": "nodemon",
     "start": "tsc && node ./dist/index.js",
