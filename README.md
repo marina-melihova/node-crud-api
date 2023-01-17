@@ -1,4 +1,4 @@
-# CRUD API was written on TypeScript with Node.js.
+# CRUD API (TypeScript with Node.js)
 
 See task [description](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/crud-api/assignment.md).
 
@@ -15,7 +15,7 @@ npm ci
 Run the application in production mode:
 
 ```
-npm start
+npm run start:prod
 ```
 
 Run the application in development mode:
